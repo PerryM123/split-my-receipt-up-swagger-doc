@@ -5,7 +5,7 @@ info:
     This is an API based on my Laravel backend project called [Split My Receipt Up](https://github.com/PerryM123/memories_backend), an app where instead of calculating receipts by hand, let's use AI's OCR instead to convert a photo of a receipt into a machine-readable text format and calculate it that way!
   version: 1.0.0
 servers:
-  - url: https://petstore3.swagger.io/api/v3
+  - url: http://local.memories.com/
 tags:
   - name: receipts
     description: Everything about receipts
@@ -17,15 +17,13 @@ paths:
     post:
       tags:
         - receipts
-      # TODO: Do we need a summary???
-      summary: Analyze a receipt photo to use OCR and grab the text from the image
-      description: Analyze receipt photo
+      summary: Analyze receipt photo
+      description: Analyze a receipt photo to use OCR and grab the text from the image
       # TODO: What is an operationId used for?
       # operationId: updatePet
       security:
         - bearerAuth: [] 
       requestBody:
-        # description: Update an existent pet in the store
         content:
           multipart/form-data:
             schema:
@@ -38,6 +36,88 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AnalyzeImageResponse'
+              examples:
+                SuccessExample:
+                  summary: Successful Receipt Analysis
+                  value:
+                    message: "Receipt Info Analyzed Successfully"
+                    receipt_info:
+                      items:
+                        - name: "ハーゲン ミニCコウチャクッキーコウガ"
+                          price_total: 218
+                        - name: "オリジナルアイスブラッドオレンジ"
+                          price_total: 204
+                        - name: "オカメ スゴイナットウS-903"
+                          price_total: 264
+                        - name: "アタックコウキンEXハヤヨウカエ850g"
+                          price_total: 308
+                        - name: "コウショウノドンゴジネヌ150*3"
+                          price_total: 78
+                        - name: "セブスプリサンゴールド"
+                          price_total: 499
+                        - name: "ワイドハイターEXパワー820ml"
+                          price_total: 328
+                        - name: "サラサーティコットン100ムコウ56"
+                          price_total: 280
+                        - name: "バナナ"
+                          price_total: 256
+                        - name: "ハウスバーニク35g"
+                          price_total: 100
+                        - name: "トマト コバコ"
+                          price_total: 398
+                        - name: "ダゾンビオセイタクブドウ"
+                          price_total: 326
+                        - name: "ダゾンビオ シチリアレモン 4コ"
+                          price_total: 163
+                        - name: "コイワイヨーグルトシボウ0 400g"
+                          price_total: 199
+                        - name: "ミヤマ イチオシキムチ 200g"
+                          price_total: 153
+                        - name: "コクサンワカドリムネニク"
+                          price_total: 596
+                      receipt_total: 4626
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_message:
+                    type: string
+                    example: validation error
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_message:
+                    type: string
+                    example: An unexpected error occurred
+  /api/receipt-info:
+    get:
+      tags:
+        - receipts
+      summary: Get list of receipts for pagination
+      description: Get list of receipt
+      security:
+        - bearerAuth: [] 
+      parameters:
+        - name: page
+          in: path
+          description: The page of items to be returned for pagination
+          required: false
+          schema:
+            $ref: '#/components/schemas/GetReceiptListParams'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetReceiptListResponse'
               examples:
                 SuccessExample:
                   summary: Successful Receipt Analysis
@@ -156,6 +236,61 @@ paths:
     #         - read:pets
 components:
   schemas:
+    GetReceiptListResponse:
+      type: object
+      description: Response containing a list of receipts for pagination.
+      properties:
+        receipt_data:
+          type: array
+          description: An array of individual receipt objects.
+          items:
+            type: object
+            description: Details of a single receipt.
+            properties:
+              receipt_id:
+                type: integer
+                description: The unique identifier for the receipt.
+                example: 30
+              title:
+                type: string
+                description: A descriptive title for the receipt.
+                example: OK 2025/5/16
+              image_url:
+                type: string
+                description: The URL where the receipt image can be accessed.
+                example: uploads/images/6840293445500.jpg
+              user_who_paid:
+                type: string
+                description: The name of the user who paid for this receipt.
+                example: hannah
+              total_amount:
+                type: integer
+                description: The total amount of the receipt in yen.
+                example: 5920
+              person_1_amount:
+                type: integer
+                description: The amount paid by the first person in yen.
+                example: 2684
+              person_2_amount:
+                type: integer
+                description: The amount paid by the second person in yen.
+                example: 3236
+              created_at:
+                type: string
+                format: date-time
+                description: The timestamp when the receipt was created (ISO 8601 format).
+                example: 2025-06-04T11:08:36.000000Z
+              updated_at:
+                type: string
+                format: date-time
+                description: The timestamp when the receipt was last updated (ISO 8601 format).
+                example: 2025-06-04T11:08:36.000000Z
+        receipt_count:
+          type: integer
+          description: The total of receipts in the list.
+          example: 22
+    GetReceiptListParams:
+      type: integer
     AnalyzeImageResponse:
       type: object
       properties:
