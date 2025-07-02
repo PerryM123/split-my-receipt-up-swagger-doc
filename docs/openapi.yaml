@@ -1,0 +1,180 @@
+openapi: 3.0.4
+info:
+  title: Split My Receipt Up
+  description: |-
+    This is an API based on my Laravel backend project called [Split My Receipt Up](https://github.com/PerryM123/memories_backend), an app where instead of calculating receipts by hand, let's use AI's OCR instead to convert a photo of a receipt into a machine-readable text format and calculate it that way!
+  version: 1.0.0
+servers:
+  - url: https://petstore3.swagger.io/api/v3
+tags:
+  - name: receipts
+    description: Everything about receipts
+    externalDocs:
+      description: Find out more
+      url: https://swagger.io
+paths:
+  /api/receipt-info/analyze:
+    post:
+      tags:
+        - receipts
+      # TODO: Do we need a summary???
+      summary: Analyze a receipt photo to use OCR and grab the text from the image
+      description: Analyze receipt photo
+      # TODO: What is an operationId used for?
+      # operationId: updatePet
+      security:
+        - bearerAuth: [] 
+      requestBody:
+        # description: Update an existent pet in the store
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AnalyzeImageRequestBody'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyzeImageResponse'
+              examples:
+                SuccessExample:
+                  summary: Successful Receipt Analysis
+                  value:
+                    message: "Receipt Info Analyzed Successfully"
+                    receipt_info:
+                      items:
+                        - name: "ハーゲン ミニCコウチャクッキーコウガ"
+                          price_total: 218
+                        - name: "オリジナルアイスブラッドオレンジ"
+                          price_total: 204
+                        - name: "オカメ スゴイナットウS-903"
+                          price_total: 264
+                        - name: "アタックコウキンEXハヤヨウカエ850g"
+                          price_total: 308
+                        - name: "コウショウノドンゴジネヌ150*3"
+                          price_total: 78
+                        - name: "セブスプリサンゴールド"
+                          price_total: 499
+                        - name: "ワイドハイターEXパワー820ml"
+                          price_total: 328
+                        - name: "サラサーティコットン100ムコウ56"
+                          price_total: 280
+                        - name: "バナナ"
+                          price_total: 256
+                        - name: "ハウスバーニク35g"
+                          price_total: 100
+                        - name: "トマト コバコ"
+                          price_total: 398
+                        - name: "ダゾンビオセイタクブドウ"
+                          price_total: 326
+                        - name: "ダゾンビオ シチリアレモン 4コ"
+                          price_total: 163
+                        - name: "コイワイヨーグルトシボウ0 400g"
+                          price_total: 199
+                        - name: "ミヤマ イチオシキムチ 200g"
+                          price_total: 153
+                        - name: "コクサンワカドリムネニク"
+                          price_total: 596
+                      receipt_total: 4626
+        # TODO: 400 & 500 case
+        # '400':
+        #   description: Invalid ID supplied
+        # '404':
+        #   description: Pet not found
+        # '422':
+        #   description: Validation exception
+        # default:
+        #   description: Unexpected error
+        #   content:
+        #     application/json:
+        #       schema:
+        #         $ref: "#/components/schemas/Error"
+    # post:
+    #   tags:
+    #     - pet
+    #   summary: Add a new pet to the store.
+    #   description: Add a new pet to the store.
+    #   operationId: addPet
+    #   requestBody:
+    #     description: Create a new pet in the store
+    #     content:
+    #       application/json:
+    #         schema:
+    #           $ref: '#/components/schemas/Pet'
+    #       application/xml:
+    #         schema:
+    #           $ref: '#/components/schemas/Pet'
+    #       application/x-www-form-urlencoded:
+    #         schema:
+    #           $ref: '#/components/schemas/Pet'
+    #     required: true
+    #   responses:
+    #     '200':
+    #       description: Successful operation
+    #       content:
+    #         application/json:
+    #           schema:
+    #             $ref: '#/components/schemas/Pet'
+    #         application/xml:
+    #           schema:
+    #             $ref: '#/components/schemas/Pet'
+    #     '400':
+    #       description: Invalid input
+    #     '422':
+    #       description: Validation exception
+    #     default:
+    #       description: Unexpected error
+    #       content:
+    #         application/json:
+    #           schema:
+    #             $ref: "#/components/schemas/Error"
+    #   security:
+    #     - petstore_auth:
+    #         - write:pets
+    #         - read:pets
+components:
+  schemas:
+    AnalyzeImageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Receipt Info Analyzed Successfully
+        receipt_info:
+          type: object
+          properties:
+            items:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: ハーゲン ミニCコウチャクッキーコウガ
+                  price_total:
+                    type: integer
+                    example: 218
+            receipt_total:
+              type: integer
+              example: 4626
+      required:
+        - message
+        - receipt_info
+    AnalyzeImageRequestBody:
+      type: object
+      properties:
+        image:
+          type: string
+          format: binary
+          description: The receipt image file to be analyzed. Must be an image file (max 5MB).
+      required:
+        - image
+  securitySchemes:
+    bearerAuth:
+      type: http # Specifies that it's an HTTP authentication scheme
+      scheme: bearer # Indicates it's a Bearer token
+      bearerFormat: JWT # Optional: A hint for the client about the token format (e.g., JWT)
+      description: |
+        Enter your Bearer token in the format **Bearer &lt;token&gt;**
