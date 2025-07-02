@@ -78,6 +78,26 @@ paths:
                         - name: "コクサンワカドリムネニク"
                           price_total: 596
                       receipt_total: 4626
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_message:
+                    type: string
+                    example: validation error
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_message:
+                    type: string
+                    example: An unexpected error occurred
         # TODO: 400 & 500 case
         # '400':
         #   description: Invalid ID supplied
