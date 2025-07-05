@@ -371,21 +371,18 @@ paths:
                     name: "コクサンチキンカツタルタルトン"
                     price: 398
                     payer_name: "perry"
-                  # ...more items...
                 person_2_bought_items:
                   - bought_item_id: 603
                     receipt_id: 40
                     name: "コウショウノドゴシヌエ150*3  2コ"
                     price: 156
                     payer_name: "hannah"
-                  # ...more items...
                 both_bought_items:
                   - bought_item_id: 601
                     receipt_id: 40
                     name: "タノンビオ シチリアレモン4コ"
                     price: 163
                     payer_name: "both"
-                  # ...more items...
         '400':
           description: Bad Request - Validation Error
           content:
@@ -606,8 +603,7 @@ components:
           example: perry
   securitySchemes:
     bearerAuth:
-      type: http # Specifies that it's an HTTP authentication scheme
-      scheme: bearer # Indicates it's a Bearer token
-      bearerFormat: JWT # Optional: A hint for the client about the token format (e.g., JWT)
+      type: http
+      scheme: bearer
       description: |
         Enter your Bearer token in the format **Bearer &lt;token&gt;**
