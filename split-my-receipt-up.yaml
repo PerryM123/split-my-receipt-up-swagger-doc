@@ -1,0 +1,609 @@
+openapi: 3.0.4
+info:
+  title: Split My Receipt Up
+  description: |-
+    This is an API based on my Laravel backend project called [Split My Receipt Up](https://github.com/PerryM123/memories_backend), an app where instead of calculating receipts by hand, let's use AI's OCR instead to convert a photo of a receipt into a machine-readable text format and calculate it that way!
+  version: 1.0.0
+servers:
+  - url: http://local.memories.com/
+tags:
+  - name: receipts
+    description: Everything about receipts
+    externalDocs:
+      description: Find out more
+      url: https://swagger.io
+paths:
+  /api/receipt-info/analyze:
+    post:
+      tags:
+        - receipts
+      summary: Analyze receipt photo
+      description: Analyze a receipt photo to use OCR and grab the text from the image
+      # TODO: What is an operationId used for?
+      # operationId: updatePet
+      security:
+        - bearerAuth: [] 
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AnalyzeImageRequestBody'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyzeImageResponse'
+              examples:
+                SuccessExample:
+                  summary: Successful Receipt Analysis
+                  value:
+                    message: "Receipt Info Analyzed Successfully"
+                    receipt_info:
+                      items:
+                        - name: "ハーゲン ミニCコウチャクッキーコウガ"
+                          price_total: 218
+                        - name: "オリジナルアイスブラッドオレンジ"
+                          price_total: 204
+                        - name: "オカメ スゴイナットウS-903"
+                          price_total: 264
+                        - name: "アタックコウキンEXハヤヨウカエ850g"
+                          price_total: 308
+                        - name: "コウショウノドンゴジネヌ150*3"
+                          price_total: 78
+                        - name: "セブスプリサンゴールド"
+                          price_total: 499
+                        - name: "ワイドハイターEXパワー820ml"
+                          price_total: 328
+                        - name: "サラサーティコットン100ムコウ56"
+                          price_total: 280
+                        - name: "バナナ"
+                          price_total: 256
+                        - name: "ハウスバーニク35g"
+                          price_total: 100
+                        - name: "トマト コバコ"
+                          price_total: 398
+                        - name: "ダゾンビオセイタクブドウ"
+                          price_total: 326
+                        - name: "ダゾンビオ シチリアレモン 4コ"
+                          price_total: 163
+                        - name: "コイワイヨーグルトシボウ0 400g"
+                          price_total: 199
+                        - name: "ミヤマ イチオシキムチ 200g"
+                          price_total: 153
+                        - name: "コクサンワカドリムネニク"
+                          price_total: 596
+                      receipt_total: 4626
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_message:
+                    type: string
+                    example: validation error
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_message:
+                    type: string
+                    example: An unexpected error occurred
+  /api/receipt-info:
+    get:
+      tags:
+        - receipts
+      summary: Get list of receipts for pagination
+      description: Get list of receipt
+      security:
+        - bearerAuth: [] 
+      parameters:
+        - name: page
+          in: path
+          description: The page of items to be returned for pagination
+          required: false
+          schema:
+            $ref: '#/components/schemas/GetReceiptListParams'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetReceiptListResponse'
+              examples:
+                SuccessExample:
+                  summary: Success
+                  value:
+                    receipt_data:
+                    - receipt_id: 30
+                      title: "OK 2025/5/16"
+                      image_url: "uploads/images/6840293445500.jpg"
+                      user_who_paid: "hannah"
+                      total_amount: 5920
+                      person_1_amount: 2684
+                      person_2_amount: 3236
+                      created_at: "2025-06-04T11:08:36.000000Z"
+                      updated_at: "2025-06-04T11:08:36.000000Z"
+                    - receipt_id: 38
+                      title: "OK 2025/5/9"
+                      image_url: "uploads/images/68418e9a7aefd.jpg"
+                      user_who_paid: "perry"
+                      total_amount: 5306
+                      person_1_amount: 2386
+                      person_2_amount: 2920
+                      created_at: "2025-06-05T12:33:30.000000Z"
+                      updated_at: "2025-06-05T12:33:30.000000Z"
+                    - receipt_id: 39
+                      title: "Ok 2025/5/23"
+                      image_url: "uploads/images/68418f7276123.jpg"
+                      user_who_paid: "perry"
+                      total_amount: 3679
+                      person_1_amount: 1513
+                      person_2_amount: 2166
+                      created_at: "2025-06-05T12:37:06.000000Z"
+                      updated_at: "2025-06-05T12:37:06.000000Z"
+                    - receipt_id: 40
+                      title: "Ok 5/30"
+                      image_url: "uploads/images/684190a715179.jpg"
+                      user_who_paid: "perry"
+                      total_amount: 8085
+                      person_1_amount: 3361
+                      person_2_amount: 4724
+                      created_at: "2025-06-05T12:42:15.000000Z"
+                      updated_at: "2025-06-05T12:42:15.000000Z"
+                    - receipt_id: 41
+                      title: "20250627"
+                      image_url: "uploads/images/68628969e6b14.jpg"
+                      user_who_paid: "perry"
+                      total_amount: 7389
+                      person_1_amount: 3423
+                      person_2_amount: 3966
+                      created_at: "2025-06-30T12:56:10.000000Z"
+                      updated_at: "2025-06-30T12:56:10.000000Z"
+                    - receipt_id: 42
+                      title: "20250620"
+                      image_url: "uploads/images/68628a92deb1b.jpg"
+                      user_who_paid: "perry"
+                      total_amount: 6489
+                      person_1_amount: 2223
+                      person_2_amount: 4266
+                      created_at: "2025-06-30T13:01:06.000000Z"
+                      updated_at: "2025-06-30T13:01:06.000000Z"
+                    - receipt_id: 43
+                      title: "20250613"
+                      image_url: "uploads/images/68628b7b6464e.jpg"
+                      user_who_paid: "perry"
+                      total_amount: 6285
+                      person_1_amount: 2579
+                      person_2_amount: 3706
+                      created_at: "2025-06-30T13:04:59.000000Z"
+                      updated_at: "2025-06-30T13:04:59.000000Z"
+                    - receipt_id: 44
+                      title: "20250606"
+                      image_url: "uploads/images/68628c0be207d.jpg"
+                      user_who_paid: "hannah"
+                      total_amount: 6793
+                      person_1_amount: 2569
+                      person_2_amount: 4224
+                      created_at: "2025-06-30T13:07:23.000000Z"
+                      updated_at: "2025-06-30T13:07:23.000000Z"
+                    receipt_count: 8
+                SuccessButOutsideOfPageRangeExample:
+                  summary: "Success but page is outside of range (Example: count is 8 but page is set to 99 is set)"
+                  value:
+                    receipt_data:
+                    - []
+                    receipt_count: 8
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_message:
+                    type: string
+                    example: validation error
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_message:
+                    type: string
+                    example: An unexpected error occurred
+    post:
+      tags:
+        - receipts
+      summary: Add a new receipt to the database
+      description: Add a new receipt to the database
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+                  description: The receipt image file to upload.
+                title:
+                  type: string
+                  description: The title of the receipt.
+                user_who_paid:
+                  type: string
+                  description: The name of the user who paid.
+                person_1_amount:
+                  type: string
+                  description: Amount paid by person 1.
+                person_2_amount:
+                  type: string
+                  description: Amount paid by person 2.
+                bought_items:
+                  type: string
+                  description: JSON string of bought items.
+                total_amount:
+                  type: string
+                  description: The total amount of the receipt.
+              required:
+                - image
+                - title
+                - user_who_paid
+                - person_1_amount
+                - person_2_amount
+                - bought_items
+                - total_amount
+      responses:
+        '201':
+          description: Save successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddReceiptResponse'
+              examples:
+                SuccessExample:
+                  summary: Receipt created successfully
+                  value:
+                    receipt_id: 11
+                    title: "hello title 2"
+                    image_url: "uploads/images/68689a4c4a6bf.jpg"
+                    user_who_paid: "perry"
+                    total_amount: 10000
+                    person_1_amount: 1000
+                    person_2_amount: 2993
+                    person_1_bought_items:
+                      - bought_item_id: 122
+                        receipt_id: 11
+                        name: "ハーゲンミニCロウチャクリキーウカ"
+                        price: 218
+                        payer_name: "perry"
+                    person_2_bought_items:
+                      - bought_item_id: 132
+                        receipt_id: 11
+                        name: "トマト コツコ"
+                        price: 398
+                        payer_name: "hannah"
+                    both_bought_items:
+                      - bought_item_id: 125
+                        receipt_id: 11
+                        name: "アタックウオシEXヘヤカカ850g"
+                        price: 308
+                        payer_name: "both"
+        '400':
+          description: Bad Request - Validation Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_info:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+              example:
+                error_info:
+                  image:
+                    - The image field is required.
+        '401':
+          description: Failed to upload image (S3/minIO error)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_message:
+                    type: string
+                  file_name:
+                    type: string
+              example:
+                error_message: Failed to upload image
+                file_name: image_name.png
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_message:
+                    type: string
+              example:
+                error_message: An unexpected error occurred
+  /api/receipt-info/{receipt_id}:
+    get:
+      tags:
+        - receipts
+      summary: Get a specific receipt by id
+      description: Get a specific receipt by id from the database
+      security:
+        - bearerAuth: [] 
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiptDetailResponse'
+              example:
+                receipt_id: 40
+                title: "Ok 5/30"
+                image_url: "uploads/images/684190a715179.jpg"
+                user_who_paid: "perry"
+                total_amount: 8085
+                person_1_amount: 3361
+                person_2_amount: 4724
+                person_1_bought_items:
+                  - bought_item_id: 612
+                    receipt_id: 40
+                    name: "コクサンチキンカツタルタルトン"
+                    price: 398
+                    payer_name: "perry"
+                person_2_bought_items:
+                  - bought_item_id: 603
+                    receipt_id: 40
+                    name: "コウショウノドゴシヌエ150*3  2コ"
+                    price: 156
+                    payer_name: "hannah"
+                both_bought_items:
+                  - bought_item_id: 601
+                    receipt_id: 40
+                    name: "タノンビオ シチリアレモン4コ"
+                    price: 163
+                    payer_name: "both"
+        '400':
+          description: Bad Request - Validation Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_info:
+                    oneOf:
+                      - type: string
+                        example: validation error
+                      - type: object
+                        additionalProperties:
+                          type: array
+                          items:
+                            type: string
+              examples:
+                ValidationError:
+                  value:
+                    error_info: "validation error"
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_message:
+                    type: string
+              example:
+                error_message: 'receipt ID "2" does not exist'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_message:
+                    type: string
+              example:
+                error_message: "An unexpected error occurred"
+        
+components:
+  schemas:
+    GetReceiptListResponse:
+      type: object
+      description: Response containing a list of receipts for pagination.
+      properties:
+        receipt_data:
+          type: array
+          description: An array of individual receipt objects.
+          items:
+            type: object
+            description: Details of a single receipt.
+            properties:
+              receipt_id:
+                type: integer
+                description: The unique identifier for the receipt.
+                example: 30
+              title:
+                type: string
+                description: A descriptive title for the receipt.
+                example: OK 2025/5/16
+              image_url:
+                type: string
+                description: The URL where the receipt image can be accessed.
+                example: uploads/images/6840293445500.jpg
+              user_who_paid:
+                type: string
+                description: The name of the user who paid for this receipt.
+                example: hannah
+              total_amount:
+                type: integer
+                description: The total amount of the receipt in yen.
+                example: 5920
+              person_1_amount:
+                type: integer
+                description: The amount paid by the first person in yen.
+                example: 2684
+              person_2_amount:
+                type: integer
+                description: The amount paid by the second person in yen.
+                example: 3236
+              created_at:
+                type: string
+                format: date-time
+                description: The timestamp when the receipt was created (ISO 8601 format).
+                example: 2025-06-04T11:08:36.000000Z
+              updated_at:
+                type: string
+                format: date-time
+                description: The timestamp when the receipt was last updated (ISO 8601 format).
+                example: 2025-06-04T11:08:36.000000Z
+        receipt_count:
+          type: integer
+          description: The total of receipts in the list.
+          example: 22
+    GetReceiptListParams:
+      type: integer
+    AnalyzeImageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Receipt Info Analyzed Successfully
+        receipt_info:
+          type: object
+          properties:
+            items:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: ハーゲン ミニCコウチャクッキーコウガ
+                  price_total:
+                    type: integer
+                    example: 218
+            receipt_total:
+              type: integer
+              example: 4626
+      required:
+        - message
+        - receipt_info
+    AnalyzeImageRequestBody:
+      type: object
+      properties:
+        image:
+          type: string
+          format: binary
+          description: The receipt image file to be analyzed. Must be an image file (max 5MB).
+      required:
+        - image
+    AddReceiptResponse:
+      type: object
+      properties:
+        receipt_id:
+          type: integer
+          example: 11
+        title:
+          type: string
+          example: hello title 2
+        image_url:
+          type: string
+          example: uploads/images/68689a4c4a6bf.jpg
+        user_who_paid:
+          type: string
+          example: perry
+        total_amount:
+          type: integer
+          example: 10000
+        person_1_amount:
+          type: integer
+          example: 1000
+        person_2_amount:
+          type: integer
+          example: 2993
+        person_1_bought_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/BoughtItem'
+        person_2_bought_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/BoughtItem'
+        both_bought_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/BoughtItem'
+    ReceiptDetailResponse:
+      type: object
+      properties:
+        receipt_id:
+          type: integer
+        title:
+          type: string
+        image_url:
+          type: string
+        user_who_paid:
+          type: string
+        total_amount:
+          type: integer
+        person_1_amount:
+          type: integer
+        person_2_amount:
+          type: integer
+        person_1_bought_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/BoughtItem'
+        person_2_bought_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/BoughtItem'
+        both_bought_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/BoughtItem'
+    BoughtItem:
+      type: object
+      properties:
+        bought_item_id:
+          type: integer
+          example: 122
+        receipt_id:
+          type: integer
+          example: 11
+        name:
+          type: string
+          example: ハーゲンミニCロウチャクリキーウカ
+        price:
+          type: integer
+          example: 218
+        payer_name:
+          type: string
+          example: perry
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: |
+        Enter your Bearer token in the format **Bearer &lt;token&gt;**
