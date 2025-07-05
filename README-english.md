@@ -6,7 +6,7 @@ An API document for an App （[PerryM123/memories_backend](https://github.com/Pe
 
 ## Swagger OpenAPI Docs
 
-- https://perrym123.github.io/split-my-receipt-up-swagger-doc/
+- https://perrym123.github.io/split-my-receipt-up-swagger-doc
 
 ## Setting up local environment
 

@@ -2,11 +2,11 @@
 
 ※ [English README.md is here！](/README-english.md)👈
 
-OpenAI の OCR でレシートを読み取り、割り勘を計算するアプリ（[PerryM123/memories_backend](https://github.com/PerryM123/memories_backend)）の API仕様書です。
+OpenAIのOCR でレシートを読み取り、割り勘を計算するアプリ（[PerryM123/memories_backend](https://github.com/PerryM123/memories_backend)のAPI仕様書です。
 
 ## API仕様書 
 
-- [API仕様書: github pages](https://github.com/PerryM123/split-my-receipt-up-swagger-doc/deployments/github-pages)
+- [API仕様書: github pages](https://perrym123.github.io/split-my-receipt-up-swagger-doc)
 
 ## ローカル環境
 
@@ -29,6 +29,6 @@ $ yarn dev
 
 ### MOCK環境
 
-OpenAI API を利用するとトークンがかかるので動作確認用のモック環境を用意しました。
+OpenAI APIを利用するとトークンがかかるので動作確認用のモック環境を用意しました。
 
 - [PerryM123/OpenAI API Mock Environment (Split My Receipt Up)](https://github.com/PerryM123/open-ai-api-mock-environment)
