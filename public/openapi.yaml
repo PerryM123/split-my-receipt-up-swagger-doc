@@ -178,62 +178,126 @@ paths:
                   error_message:
                     type: string
                     example: An unexpected error occurred
-        # TODO: 400 & 500 case
-        # '400':
-        #   description: Invalid ID supplied
-        # '404':
-        #   description: Pet not found
-        # '422':
-        #   description: Validation exception
-        # default:
-        #   description: Unexpected error
-        #   content:
-        #     application/json:
-        #       schema:
-        #         $ref: "#/components/schemas/Error"
-    # post:
-    #   tags:
-    #     - pet
-    #   summary: Add a new pet to the store.
-    #   description: Add a new pet to the store.
-    #   operationId: addPet
-    #   requestBody:
-    #     description: Create a new pet in the store
-    #     content:
-    #       application/json:
-    #         schema:
-    #           $ref: '#/components/schemas/Pet'
-    #       application/xml:
-    #         schema:
-    #           $ref: '#/components/schemas/Pet'
-    #       application/x-www-form-urlencoded:
-    #         schema:
-    #           $ref: '#/components/schemas/Pet'
-    #     required: true
-    #   responses:
-    #     '200':
-    #       description: Successful operation
-    #       content:
-    #         application/json:
-    #           schema:
-    #             $ref: '#/components/schemas/Pet'
-    #         application/xml:
-    #           schema:
-    #             $ref: '#/components/schemas/Pet'
-    #     '400':
-    #       description: Invalid input
-    #     '422':
-    #       description: Validation exception
-    #     default:
-    #       description: Unexpected error
-    #       content:
-    #         application/json:
-    #           schema:
-    #             $ref: "#/components/schemas/Error"
-    #   security:
-    #     - petstore_auth:
-    #         - write:pets
-    #         - read:pets
+    post:
+      tags:
+        - receipts
+      summary: Add a new receipt to the database
+      description: Add a new receipt to the database
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+                  description: The receipt image file to upload.
+                title:
+                  type: string
+                  description: The title of the receipt.
+                user_who_paid:
+                  type: string
+                  description: The name of the user who paid.
+                person_1_amount:
+                  type: string
+                  description: Amount paid by person 1.
+                person_2_amount:
+                  type: string
+                  description: Amount paid by person 2.
+                bought_items:
+                  type: string
+                  description: JSON string of bought items.
+                total_amount:
+                  type: string
+                  description: The total amount of the receipt.
+              required:
+                - image
+                - title
+                - user_who_paid
+                - person_1_amount
+                - person_2_amount
+                - bought_items
+                - total_amount
+      responses:
+        '201':
+          description: Save successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddReceiptResponse'
+              examples:
+                SuccessExample:
+                  summary: Receipt created successfully
+                  value:
+                    receipt_id: 11
+                    title: "hello title 2"
+                    image_url: "uploads/images/68689a4c4a6bf.jpg"
+                    user_who_paid: "perry"
+                    total_amount: 10000
+                    person_1_amount: 1000
+                    person_2_amount: 2993
+                    person_1_bought_items:
+                      - bought_item_id: 122
+                        receipt_id: 11
+                        name: "ハーゲンミニCロウチャクリキーウカ"
+                        price: 218
+                        payer_name: "perry"
+                    person_2_bought_items:
+                      - bought_item_id: 132
+                        receipt_id: 11
+                        name: "トマト コツコ"
+                        price: 398
+                        payer_name: "hannah"
+                    both_bought_items:
+                      - bought_item_id: 125
+                        receipt_id: 11
+                        name: "アタックウオシEXヘヤカカ850g"
+                        price: 308
+                        payer_name: "both"
+        '400':
+          description: Bad Request - Validation Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_info:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+              example:
+                error_info:
+                  image:
+                    - The image field is required.
+        '401':
+          description: Failed to upload image (S3/minIO error)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_message:
+                    type: string
+                  file_name:
+                    type: string
+              example:
+                error_message: Failed to upload image
+                file_name: image_name.png
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_message:
+                    type: string
+              example:
+                error_message: An unexpected error occurred
 components:
   schemas:
     GetReceiptListResponse:
@@ -326,6 +390,60 @@ components:
           description: The receipt image file to be analyzed. Must be an image file (max 5MB).
       required:
         - image
+    AddReceiptResponse:
+      type: object
+      properties:
+        receipt_id:
+          type: integer
+          example: 11
+        title:
+          type: string
+          example: hello title 2
+        image_url:
+          type: string
+          example: uploads/images/68689a4c4a6bf.jpg
+        user_who_paid:
+          type: string
+          example: perry
+        total_amount:
+          type: integer
+          example: 10000
+        person_1_amount:
+          type: integer
+          example: 1000
+        person_2_amount:
+          type: integer
+          example: 2993
+        person_1_bought_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/BoughtItem'
+        person_2_bought_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/BoughtItem'
+        both_bought_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/BoughtItem'
+    BoughtItem:
+      type: object
+      properties:
+        bought_item_id:
+          type: integer
+          example: 122
+        receipt_id:
+          type: integer
+          example: 11
+        name:
+          type: string
+          example: ハーゲンミニCロウチャクリキーウカ
+        price:
+          type: integer
+          example: 218
+        payer_name:
+          type: string
+          example: perry
   securitySchemes:
     bearerAuth:
       type: http # Specifies that it's an HTTP authentication scheme
