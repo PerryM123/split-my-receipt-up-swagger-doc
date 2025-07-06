@@ -86,6 +86,8 @@ paths:
                   error_message:
                     type: string
                     example: validation error
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
         '500':
           description: Internal Server Error
           content:
@@ -212,6 +214,8 @@ paths:
                   error_message:
                     type: string
                     example: validation error
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
         '500':
           description: Internal Server Error
           content:
@@ -318,19 +322,7 @@ paths:
                   image:
                     - The image field is required.
         '401':
-          description: Failed to upload image (S3/minIO error)
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error_message:
-                    type: string
-                  file_name:
-                    type: string
-              example:
-                error_message: Failed to upload image
-                file_name: image_name.png
+          $ref: '#/components/responses/UnauthorizedError'
         '500':
           description: Internal Server Error
           content:
@@ -403,6 +395,8 @@ paths:
                 ValidationError:
                   value:
                     error_info: "validation error"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
         '404':
           description: Not Found
           content:
@@ -601,6 +595,17 @@ components:
         payer_name:
           type: string
           example: perry
+  responses:
+    UnauthorizedError:
+      description: Unauthorized - Invalid or missing authentication token
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Unauthorized
   securitySchemes:
     bearerAuth:
       type: http
