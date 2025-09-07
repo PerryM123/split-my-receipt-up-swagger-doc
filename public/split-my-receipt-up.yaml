@@ -113,6 +113,16 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/GetReceiptListParams'
+        - name: sort_by
+          in: path
+          description: Describes how the receipt data will be sorted when returned
+          required: false
+          schema:
+            type: string
+            default: desc
+            enum:
+              - asc
+              - desc
       responses:
         '200':
           description: Successful operation
