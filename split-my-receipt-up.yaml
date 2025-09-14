@@ -208,12 +208,14 @@ paths:
                       created_at: "2025-06-30T13:07:23.000000Z"
                       updated_at: "2025-06-30T13:07:23.000000Z"
                     receipt_count: 8
+                    page_count: 1
                 SuccessButOutsideOfPageRangeExample:
                   summary: "Success but page is outside of range (Example: count is 8 but page is set to 99 is set)"
                   value:
                     receipt_data:
                     - []
                     receipt_count: 8
+                    page_count: 1
         '400':
           description: Bad Request
           content:
@@ -489,6 +491,10 @@ components:
           type: integer
           description: The total of receipts in the list.
           example: 22
+        page_count:
+          type: integer
+          description: The total of pages (10 items per page).
+          example: 2
     GetReceiptListParams:
       type: integer
     AnalyzeImageResponse:
